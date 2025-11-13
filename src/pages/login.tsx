@@ -26,11 +26,11 @@ export default function Home() {
     const res = await login({ username, password });
     setLoading(false);
 
-    // if (res.ok) {
+    if (res.ok) {
       router.push("/");
-    // } else {
-    //   setError(res.error || "Credenciais inválidas");
-    // }
+    } else {
+      setError(res.error || "Credenciais inválidas");
+    }
   }
 
   return (

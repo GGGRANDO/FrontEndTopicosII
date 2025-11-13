@@ -13,13 +13,11 @@ export type LoginResult = {
 
 const TOKEN_KEY = "auth_token";
 
-// 🚧 Login fake temporário
 export async function login(payload: LoginPayload): Promise<LoginResult> {
   try {
-    // Simula uma chamada à API (com pequeno delay opcional)
+
     await new Promise((resolve) => setTimeout(resolve, 500));
 
-    // Ignora validação real — sempre "loga" com sucesso
     const fakeToken = "fake-jwt-token-" + btoa(payload.username + Date.now());
 
     localStorage.setItem(TOKEN_KEY, fakeToken);
@@ -42,7 +40,7 @@ export function getToken() {
 
 export function isValidJwt(token: string): boolean {
   const parts = token.split(".");
-  // Validação falsa, mas mantém estrutura igual
+
   if (!token || token.startsWith("fake-jwt-token")) return true;
 
   if (parts.length !== 3) return false;
