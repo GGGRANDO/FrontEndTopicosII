@@ -61,12 +61,16 @@ export default function Pedidos() {
   async function fetchOrders(token: string) {
     try {
       setLoading(true);
-      const { data } = await api.get<Order[]>("/orders", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const { data } = await api.get<Order[]>("/orders");
       setOrders(data);
     } catch {
-      setError("Erro ao carregar pedidos");
+      const e: any = arguments[0] || {};
+      const message = e?.response?.data?.message || e?.message || "Erro ao carregar pedidos";
+      setError(message);
+      if (e?.response?.status === 401) {
+        logout();
+        router.replace("/login");
+      }
     } finally {
       setLoading(false);
     }
@@ -74,12 +78,11 @@ export default function Pedidos() {
 
   async function fetchProducts(token: string) {
     try {
-      const { data } = await api.get<Product[]>("/products", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const { data } = await api.get<Product[]>("/products");
       setProducts(data);
     } catch {
-      console.error("Erro ao carregar produtos");
+      const e: any = arguments[0] || {};
+      console.error(e?.response?.data?.message || e?.message || "Erro ao carregar produtos");
     }
   }
 
@@ -112,30 +115,36 @@ export default function Pedidos() {
     if (!token) return;
     try {
       if (editingOrder) {
-        await api.put(`/orders/${editingOrder.id}`, formData, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        await api.put(`/orders/${editingOrder.id}`, formData);
       } else {
-        await api.post("/orders", formData, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        await api.post("/orders", formData);
       }
       fetchOrders(token);
       closeModal();
     } catch {
-      setError("Erro ao salvar pedido");
+      const e: any = arguments[0] || {};
+      const message = e?.response?.data?.message || e?.message || "Erro ao salvar pedido";
+      setError(message);
+      if (e?.response?.status === 401) {
+        logout();
+        router.replace("/login");
+      }
     }
   }
 
   async function handleDelete(id: number) {
     if (!token) return;
     try {
-      await api.delete(`/orders/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await api.delete(`/orders/${id}`);
       fetchOrders(token);
     } catch {
-      setError("Erro ao deletar pedido");
+      const e: any = arguments[0] || {};
+      const message = e?.response?.data?.message || e?.message || "Erro ao deletar pedido";
+      setError(message);
+      if (e?.response?.status === 401) {
+        logout();
+        router.replace("/login");
+      }
     }
   }
 

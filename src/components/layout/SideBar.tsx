@@ -11,6 +11,7 @@ export default function Sidebar() {
     { href: "/pedidos", label: "Pedidos" },
     { href: "/produtos", label: "Produtos" },
     { href: "/usuarios", label: "Usuários" },
+    { href: "/sobre", label: "Sobre" },
   ];
 
   return (
@@ -24,7 +25,7 @@ export default function Sidebar() {
       }}
     >
       <div className="mb-4">
-        <h2 className="h5 fw-bold text-center mb-0">Loja ITEC</h2>
+        <h2 className="h5 fw-bold text-center mb-0">3G Eletrônicos</h2>
       </div>
 
       <Nav variant="pills" className="flex-column gap-2">

@@ -37,13 +37,16 @@ export default function Produtos() {
   async function fetchProducts(token: string) {
     try {
       setLoading(true);
-      const { data } = await api.get<Product[]>("/products", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const { data } = await api.get<Product[]>("/products");
       setProducts(data);
       setLoading(false);
     } catch (err) {
-      setError("Erro ao carregar produtos");
+      const message = err?.response?.data?.message || err?.message || "Erro ao carregar produtos";
+      setError(message);
+      if (err?.response?.status === 401) {
+        logout();
+        router.replace("/login");
+      }
       setLoading(false);
     }
   }
@@ -73,30 +76,34 @@ export default function Produtos() {
 
     try {
       if (editingProduct) {
-        await api.put(`/products/${editingProduct.id}`, formData, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+          await api.put(`/products/${editingProduct.id}`, formData);
       } else {
-        await api.post("/products", formData, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+          await api.post("/products", formData);
       }
       fetchProducts(token);
       closeModal();
     } catch (err) {
-      setError("Erro ao salvar produto");
+      const message = err?.response?.data?.message || err?.message || "Erro ao salvar produto";
+      setError(message);
+      if (err?.response?.status === 401) {
+        logout();
+        router.replace("/login");
+      }
     }
   }
 
   async function handleDelete(id: number) {
     if (!token) return;
     try {
-      await api.delete(`/products/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await api.delete(`/products/${id}`);
       fetchProducts(token);
     } catch (err) {
-      setError("Erro ao deletar produto");
+      const message = err?.response?.data?.message || err?.message || "Erro ao deletar produto";
+      setError(message);
+      if (err?.response?.status === 401) {
+        logout();
+        router.replace("/login");
+      }
     }
   }
 
